@@ -1,567 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holland Bangka - Terang Bulan & Martabak</title>
-    <meta name="description" content="Katalog resmi Holland Bangka. Nikmati Terang Bulan dan Martabak Telur lezat dengan berbagai pilihan rasa.">
-    <meta name="theme-color" content="#6b1d2f">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Holland Bangka - Terang Bulan & Martabak">
-    <meta property="og:description" content="Katalog menu dan pemesanan praktis Terang Bulan & Martabak Holland Bangka.">
-    <meta property="og:type" content="website">
-
-    <!-- SVG Favicon Data URI -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236b1d2f'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='%23d4af37'>HB</text></svg>">
-
-    <style>
-        :root {
-            --primary: #6b1d2f;
-            --primary-hover: #521523;
-            --gold: #d4af37;
-            --bg: #121212;
-            --surface: #1e1e1e;
-            --surface-card: #282828;
-            --text: #f0f0f0;
-            --text-muted: #a0a0a0;
-            --border: #383838;
-            --radius: 12px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            padding-bottom: 80px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), #3b0e19);
-            color: var(--gold);
-            text-align: center;
-            padding: 2.5rem 1rem;
-            border-bottom: 3px solid var(--gold);
-        }
-
-        header h1 {
-            font-size: 2.2rem;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        header p {
-            color: #e0e0e0;
-            font-size: 0.95rem;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 1.5rem 1rem;
-        }
-
-        .info-box {
-            background-color: var(--surface);
-            border-left: 4px solid var(--gold);
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-        }
-
-        .info-box strong {
-            color: var(--gold);
-        }
-
-        .search-section {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 0.8rem 1rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background-color: var(--surface);
-            color: var(--text);
-            font-size: 1rem;
-        }
-
-        .search-input:focus {
-            outline: 2px solid var(--gold);
-        }
-
-        .catalog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .card {
-            background-color: var(--surface-card);
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .card-img-placeholder {
-            height: 160px;
-            background: linear-gradient(45deg, #3a3a3a, #1f1f1f);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 1.1rem;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        .card-body {
-            padding: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.4rem;
-            color: #fff;
-        }
-
-        .card-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            flex-grow: 1;
-        }
-
-        .card-price {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 0.7rem;
-            text-align: center;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .order-section {
-            background-color: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-
-        .order-section h2 {
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background-color: var(--bg);
-            color: var(--text);
-            font-size: 0.95rem;
-        }
-
-        .form-control:focus {
-            outline: 1px solid var(--gold);
-        }
-
-        .subtotal-box {
-            font-weight: bold;
-            color: var(--gold);
-            font-size: 1.1rem;
-            padding: 0.5rem 0;
-            border-top: 1px dashed var(--border);
-            margin-top: 0.5rem;
-        }
-
-        .disclaimer {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-align: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .float-wa {
-            position: fixed;
-            width: 55px;
-            height: 55px;
-            bottom: 25px;
-            right: 25px;
-            background-color: #25d366;
-            color: #fff;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.7rem; }
-            .catalog-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#5b211e">
+<meta name="description" content="HOLLAND BANGKA — Martabak & Terang Bulan. Lihat menu dan siapkan pesanan. Informasi harga, outlet, dan ketersediaan dikonfirmasi langsung oleh usaha.">
+<meta property="og:title" content="HOLLAND BANGKA | Martabak & Terang Bulan">
+<meta property="og:description" content="Jelajahi menu HOLLAND BANGKA dan siapkan pesanan Anda.">
+<meta property="og:type" content="website">
+<title>HOLLAND BANGKA | Martabak & Terang Bulan</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235b211e'/%3E%3Ctext x='32' y='43' font-size='32' text-anchor='middle' font-family='Arial' font-weight='bold' fill='%23f8d889'%3EHB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#5b211e;--wine2:#762e28;--gold:#f4c96b;--cream:#fff8ed;--paper:#fffdf9;--ink:#2d211d;--muted:#806f66;--line:#eadbd0;--green:#246b4b;--shadow:0 16px 45px #4b20120f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 "DM Sans",Arial,sans-serif}button,input,select,textarea{font:inherit}button,a{touch-action:manipulation}a{color:inherit}button{cursor:pointer}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}.top{background:var(--wine);color:#fff2d6;text-align:center;padding:8px 14px;font-size:12px;letter-spacing:.04em}.header{position:sticky;top:0;z-index:10;background:#fffdf9ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.head{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;display:flex;align-items:center;gap:11px;color:var(--wine);font-weight:800;letter-spacing:-.04em;font-size:21px}.mark{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;background:var(--wine);color:var(--gold);font:800 16px "Playfair Display",serif;letter-spacing:-.05em}.brand small{display:block;font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:700}.nav{display:flex;gap:24px;align-items:center}.nav a{text-decoration:none;color:#604b42;font-size:14px;font-weight:700}.nav a:hover{color:var(--wine2)}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:999px;padding:13px 21px;background:var(--wine);color:white;font-weight:700;text-decoration:none;box-shadow:0 7px 18px #5b211e20;transition:transform .18s,background .18s}.btn:hover{background:var(--wine2);transform:translateY(-1px)}.btn.gold{background:var(--gold);color:var(--wine);box-shadow:none}.btn.outline{background:transparent;color:var(--wine);border:1px solid var(--wine);box-shadow:none}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.hero{padding:65px 0 58px;background:radial-gradient(ellipse at 80% 10%,#f4c96b40,transparent 35%),linear-gradient(135deg,#fff7e8,#f9e9d9);overflow:hidden}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center}.eyebrow{color:var(--wine2);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hero h1{font:800 clamp(40px,5.6vw,68px)/1.08 "Playfair Display",Georgia,serif;color:var(--wine);letter-spacing:-.04em;margin:15px 0 18px}.hero p{max-width:560px;color:#6c5549;font-size:17px;margin:0 0 26px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-art{min-height:330px;border-radius:34px;background:linear-gradient(145deg,#6b2a22,#351513);position:relative;display:grid;place-items:center;overflow:hidden;box-shadow:0 28px 60px #5b211e26}.hero-art:before,.hero-art:after{content:"";position:absolute;border:1px solid #f4c96b55;border-radius:50%;width:330px;height:330px}.hero-art:after{width:250px;height:250px}.plate{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e6b66c,#b87538 65%,#81401f);border:12px solid #f8e4b8;box-shadow:0 18px 35px #180b08a8;display:grid;place-items:center;z-index:1;transform:rotate(-12deg)}.plate span{font:800 28px/1.1 "Playfair Display",serif;color:#54231a;text-align:center;text-shadow:0 1px #f8dca0}.art-tag{position:absolute;bottom:23px;right:24px;color:#f8d889;font-size:11px;letter-spacing:.16em;font-weight:800;z-index:2}.section{padding:65px 0}.section-head{text-align:center;max-width:700px;margin:0 auto 34px}.section-head h2{font:700 clamp(30px,4vw,43px)/1.15 "Playfair Display",serif;color:var(--wine);margin:9px 0 12px}.section-head p{color:var(--muted);margin:0}.menu-tools{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:22px;flex-wrap:wrap}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:1px solid var(--line);background:#fffdf9;border-radius:999px;padding:9px 16px;color:#735e53;font-size:13px;font-weight:700}.filter.active,.filter:hover{background:var(--wine);color:#fff;border-color:var(--wine)}.search{width:min(300px,100%);border:1px solid var(--line);background:white;border-radius:999px;padding:11px 16px;outline:none}.search:focus{border-color:var(--wine);box-shadow:0 0 0 3px #5b211e15}.menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.food-card{background:var(--paper);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}.food-visual{height:190px;background:#ead4b7;display:grid;place-items:center;position:relative;overflow:hidden}.food-visual img{width:100%;height:100%;object-fit:cover;display:block}.food-placeholder{width:100%;height:100%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#f8d99a,#bc7944 56%,#67331f);color:#fff8e8;text-align:center;font:700 18px/1.3 "Playfair Display",serif;text-shadow:0 2px 5px #33180f;padding:20px}.photo-note{position:absolute;left:9px;bottom:9px;background:#25130dcc;color:#fff;border-radius:8px;padding:4px 8px;font-size:10px;font-weight:700}.food-visual:before{display:none}.food-visual span{position:absolute;top:10px;left:10px;font:800 12px "DM Sans",sans-serif;color:#fff;background:#351513d9;border-radius:999px;padding:6px 12px}.food-body{padding:19px;display:flex;flex-direction:column;flex:1}.food-type{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#a15d35;font-weight:800}.food-body h3{font:700 21px/1.2 "Playfair Display",serif;color:var(--wine);margin:7px 0}.food-body p{font-size:13px;color:var(--muted);margin:0 0 15px;flex:1}.food-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:13px;font-weight:800;color:var(--wine)}.food-foot button{border:0;border-radius:999px;background:var(--wine);color:white;padding:9px 14px;font-size:12px;font-weight:700}.disclaimer{text-align:center;color:var(--muted);font-size:12px;margin:20px 0 0}.order-section{background:#f7eade}.order-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:start}.order-intro{background:var(--wine);color:#fff2dc;padding:30px;border-radius:24px;position:sticky;top:105px}.order-intro h2{font:700 32px/1.15 "Playfair Display",serif;margin:10px 0 15px}.order-intro p{color:#f0d8c8;font-size:14px}.order-intro ul{padding-left:20px;font-size:13px;color:#f0d8c8;line-height:2}.form-card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow)}.form-card h3{font:700 25px "Playfair Display",serif;color:var(--wine);margin:0 0 20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800;color:#604b42}.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--wine);box-shadow:0 0 0 3px #5b211e12}.field textarea{min-height:90px;resize:vertical}.checkrow{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--muted);margin:16px 0}.checkrow input{margin-top:4px}.form-card .btn{width:100%}.notice{padding:12px 14px;background:#fff3d8;border:1px solid #f1d99f;border-radius:12px;color:#78571b;font-size:12px;margin:16px 0 0}.orders{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;overflow:auto}.orders h3{font:700 25px "Playfair Display",serif;color:var(--wine);margin:0 0 16px}.orders table{width:100%;border-collapse:collapse;min-width:600px}.orders th,.orders td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:12px}.orders th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.08em}.status{display:inline-block;border-radius:99px;padding:5px 10px;background:#fff0c9;color:#805a12;font-weight:800;font-size:11px}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}.about-card{padding:30px;border-radius:24px;background:#fff;border:1px solid var(--line)}.about-card h3{font:700 28px "Playfair Display",serif;color:var(--wine);margin:0 0 12px}.about-card p{color:var(--muted);font-size:14px}.social-link{display:inline-flex;align-items:center;gap:9px;color:var(--wine);font-weight:800;text-decoration:none;border-bottom:1px solid #d9b6a5;padding-bottom:3px}.footer{background:#351513;color:#e8cfc0;padding:38px 0 25px}.foot-grid{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}.footer .brand{color:white}.footer .brand small{color:#d8b8a7}.footer p{max-width:480px;font-size:13px;color:#c6a99a}.footer a{color:#f8d889}.copyright{border-top:1px solid #ffffff20;margin-top:26px;padding-top:18px;font-size:11px;color:#bda094;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:30;background:#2e211d;color:white;padding:13px 18px;border-radius:12px;box-shadow:0 10px 35px #0003;max-width:min(90vw,500px);font-size:13px}.empty{padding:30px;text-align:center;color:var(--muted);grid-column:1/-1;background:#fff;border:1px dashed var(--line);border-radius:18px}.wa-float{position:fixed;right:18px;bottom:18px;z-index:25;background:#167a45;color:#fff;box-shadow:0 10px 30px #143b2a40}.hidden{display:none!important}
+@media(max-width:850px){.hero-grid,.order-grid,.about-grid{grid-template-columns:1fr}.hero-art{min-height:270px}.order-intro{position:static}.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{gap:12px}.head>.btn{display:none}}
+@media(max-width:580px){.wrap{width:min(100% - 28px,1160px)}.head{min-height:68px}.brand{font-size:17px}.mark{width:38px;height:38px}.nav{gap:11px}.nav a{font-size:12px}.hero{padding:42px 0}.hero h1{font-size:42px}.hero p{font-size:15px}.hero-art{min-height:230px}.plate{width:170px;height:170px}.section{padding:48px 0}.menu-grid{grid-template-columns:1fr}.menu-tools{align-items:stretch}.search{width:100%}.form-card{padding:20px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.order-intro{padding:24px}.copyright{display:block}.copyright span{display:block;margin:4px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+</style>
 </head>
 <body>
-
-    <header>
-        <h1>HOLLAND BANGKA</h1>
-        <p>Terang Bulan & Martabak Telur Spesial</p>
-    </header>
-
-    <div class="container">
-        <!-- Info Cabang -->
-        <div class="info-box">
-            <strong>Cabang Resmi Pelayanan:</strong> Dukuh Menanggal, Candi, Sawunggaling, & Sungon.<br>
-            <small>Pesanan diproses langsung dari cabang terdekat dengan jaminan kualitas hidangan hangat segar.</small>
-        </div>
-
-        <!-- Filter Pencarian -->
-        <div class="search-section">
-            <input type="text" id="searchInput" class="search-input" placeholder="Cari menu (misal: Coklat, Keju, Martabak)..." aria-label="Cari Menu">
-        </div>
-
-        <!-- Grid Katalog Menu -->
-        <div id="catalogGrid" class="catalog-grid"></div>
-
-        <!-- Form Pemesanan Resmi -->
-        <div class="order-section" id="pesan">
-            <h2>Formulir Pemesanan Resmi</h2>
-            <form id="orderForm">
-                <div class="form-group">
-                    <label for="customerName">Nama Pemesan</label>
-                    <input type="text" id="customerName" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
-                </div>
-                <div class="form-group">
-                    <label for="selectedItem">Pilih Menu</label>
-                    <select id="selectedItem" class="form-control" required>
-                        <option value="">-- Pilih Menu --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="itemQty">Jumlah Porsi</label>
-                    <input type="number" id="itemQty" class="form-control" value="1" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="branchSelect">Cabang Tujuan</label>
-                    <select id="branchSelect" class="form-control" required>
-                        <option value="Dukuh Menanggal">Dukuh Menanggal</option>
-                        <option value="Candi">Candi</option>
-                        <option value="Sawunggaling">Sawunggaling</option>
-                        <option value="Sungon">Sungon</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="itemNotes">Catatan Tambahan (Opsional)</label>
-                    <textarea id="itemNotes" class="form-control" rows="3" placeholder="Contoh: Tanpa wijen, matang krispi, dll."></textarea>
-                </div>
-
-                <div class="subtotal-box" id="subtotalDisplay">
-                    Estimasi Subtotal: Rp 0
-                </div>
-
-                <button type="submit" class="btn" style="background-color: #25d366; color: #fff; margin-top: 1rem;">
-                    Kirim Pesanan via WhatsApp
-                </button>
-            </form>
-        </div>
-
-        <div class="disclaimer">
-            &copy; Holland Bangka. Katalog & Layanan Pemesanan Langsung WhatsApp.
-        </div>
-    </div>
-
-    <!-- Floating WA Icon -->
-    <a id="floatingWaBtn" href="#" class="float-wa" target="_blank" rel="noopener" aria-label="Chat via WhatsApp">
-        <svg style="width:30px;height:30px" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.19 8.19 0 0 1-1.26-4.38c.01-4.54 3.71-8.24 8.25-8.24m-3.52 4.2c-.19 0-.5.07-.76.35-.26.29-1 1-1 2.43s1.03 2.8 1.17 3c.14.19 2.03 3.1 4.93 4.35.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.11.56-.08 1.72-.7 1.96-1.38.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34s-1.72-.85-1.99-.95c-.27-.1-.46-.15-.65.15-.19.3-.74.95-.91 1.14-.17.19-.34.22-.63.08-.29-.15-1.23-.45-2.35-1.45-.87-.78-1.46-1.74-1.63-2.03-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.2-.29.3-.48.1-.19.05-.36-.02-.5-.08-.15-.65-1.57-.9-2.15-.24-.58-.48-.5-.65-.51z"/>
-        </svg>
-    </a>
-
-    <script>
-        // KONFIGURASI BISNIS KLIEN
-        const RAW_WA_NUMBER = "6281234567890"; // Ganti dengan nomor WhatsApp resmi Holland Bangka
-        const CLIENT_WA_NUMBER = RAW_WA_NUMBER.replace(/\D/g, ''); // Sanitasi otomatis hanya angka
-
-        // Data Produk Resmi Holland Bangka
-        const catalogProducts = [
-            { id: 1, name: "Terang Bulan Coklat Kacang", category: "Terang Bulan", price: 35000, image: "img/coklat-kacang.jpg", desc: "Adonan lembut premium dengan isian meeres coklat melimpah dan taburan kacang sangrai." },
-            { id: 2, name: "Terang Bulan Keju Susu", category: "Terang Bulan", price: 40000, image: "img/keju-susu.jpg", desc: "Keju parut tebal berpadu manisnya susu kental manis di atas adonan hangat." },
-            { id: 3, name: "Terang Bulan Spesial Kombinasi", category: "Terang Bulan", price: 48000, image: "img/kombinasi.jpg", desc: "Paduan sempurna Coklat, Kacang, Keju, dan Wijen dalam satu porsi mantap." },
-            { id: 4, name: "Terang Bulan Red Velvet Keju", category: "Terang Bulan", price: 52000, image: "img/red-velvet.jpg", desc: "Adonan Red Velvet khas dengan olesan cream cheese dan parutan keju melimpah." },
-            { id: 5, name: "Martabak Telur Daging Sapi (Biasa)", category: "Martabak Telur", price: 38000, image: "img/martabak-biasa.jpg", desc: "Kulit renyah gurih dengan isian 2 telur dan olahan daging sapi cincang bumbu rempah." },
-            { id: 6, name: "Martabak Telur Daging Sapi (Spesial)", category: "Martabak Telur", price: 48000, image: "img/martabak-spesial.jpg", desc: "Isian 3 telur dengan porsi daging sapi lebih tebal dan daun bawang segar." },
-            { id: 7, name: "Martabak Telur Super Meat", category: "Martabak Telur", price: 58000, image: "img/martabak-super.jpg", desc: "Isian 4 telur, ekstra daging sapi pilihan, disajikan lengkap dengan kuah cuko asam manis." },
-            { id: 8, name: "Martabak Mozzarella Melt", category: "Martabak Telur", price: 62000, image: "img/martabak-mozzarella.jpg", desc: "Martabak daging sapi dengan toping keju Mozzarella yang dilelehkan melimpah." }
-        ];
-
-        // Element Selectors
-        const catalogGrid = document.getElementById("catalogGrid");
-        const searchInput = document.getElementById("searchInput");
-        const selectedItemSelect = document.getElementById("selectedItem");
-        const itemQtyInput = document.getElementById("itemQty");
-        const subtotalDisplay = document.getElementById("subtotalDisplay");
-        const orderForm = document.getElementById("orderForm");
-        const floatingWaBtn = document.getElementById("floatingWaBtn");
-
-        // Helper Sanitasi HTML (Mencegah XSS & Broken Layout)
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        // Format Rupiah Helper
-        function formatRupiah(number) {
-            const val = Number(number) || 0;
-            return new Intl.NumberFormat("id-ID").format(val);
-        }
-
-        // Handler Error Gambar Aman (Menggantikan inline string escaping)
-        window.handleImageError = function(imgEl, title) {
-            const placeholder = document.createElement("div");
-            placeholder.className = "card-img-placeholder";
-            placeholder.textContent = title;
-            if (imgEl && imgEl.parentNode) {
-                imgEl.parentNode.replaceChild(placeholder, imgEl);
-            }
-        };
-
-        // Render Menu Catalog
-        function renderProducts(items) {
-            catalogGrid.innerHTML = "";
-            if (!items || items.length === 0) {
-                catalogGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">Menu tidak ditemukan.</p>`;
-                return;
-            }
-
-            items.forEach(product => {
-                const card = document.createElement("div");
-                card.className = "card";
-                
-                const safeName = escapeHtml(product.name);
-                const safeDesc = escapeHtml(product.desc);
-
-                const imageHtml = product.image 
-                    ? `<img src="${escapeHtml(product.image)}" alt="${safeName}" class="card-img" onerror="handleImageError(this, '${safeName.replace(/'/g, "\\'")}')">`
-                    : `<div class="card-img-placeholder">${safeName}</div>`;
-
-                card.innerHTML = `
-                    ${imageHtml}
-                    <div class="card-body">
-                        <h3 class="card-title">${safeName}</h3>
-                        <p class="card-desc">${safeDesc}</p>
-                        <div class="card-price">Rp ${formatRupiah(product.price)}</div>
-                        <button type="button" class="btn" onclick="quickSelectProduct(${product.id})">Pilih Menu Ini</button>
-                    </div>
-                `;
-                catalogGrid.appendChild(card);
-            });
-        }
-
-        // Populate Dropdown Form Options
-        function populateSelectOptions() {
-            selectedItemSelect.innerHTML = `<option value="">-- Pilih Menu --</option>`;
-            catalogProducts.forEach(product => {
-                const option = document.createElement("option");
-                option.value = String(product.id);
-                option.dataset.price = product.price;
-                option.dataset.name = product.name;
-                option.textContent = `${product.name} - Rp ${formatRupiah(product.price)}`;
-                selectedItemSelect.appendChild(option);
-            });
-        }
-
-        // Calculations Subtotal Logic
-        function updateSubtotal() {
-            const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
-            const price = (selectedOpt && selectedOpt.dataset.price) ? parseFloat(selectedOpt.dataset.price) : 0;
-            
-            let qty = parseInt(itemQtyInput.value, 10);
-            if (isNaN(qty) || qty < 1) {
-                qty = 1;
-            }
-
-            const subtotal = price * qty;
-            subtotalDisplay.textContent = `Estimasi Subtotal: Rp ${formatRupiah(subtotal)}`;
-        }
-
-        // Quick Select Menu
-        window.quickSelectProduct = function(productId) {
-            selectedItemSelect.value = String(productId);
-            updateSubtotal();
-
-            const formSec = document.getElementById("pesan");
-            if (formSec) {
-                formSec.scrollIntoView({ behavior: "smooth" });
-            }
-        };
-
-        // Event Listeners for Subtotal Updates
-        selectedItemSelect.addEventListener("change", updateSubtotal);
-        itemQtyInput.addEventListener("input", updateSubtotal);
-        itemQtyInput.addEventListener("change", () => {
-            if (parseInt(itemQtyInput.value, 10) < 1 || isNaN(parseInt(itemQtyInput.value, 10))) {
-                itemQtyInput.value = 1;
-                updateSubtotal();
-            }
-        });
-
-        // Live Search Filter
-        searchInput.addEventListener("input", (e) => {
-            const keyword = e.target.value.toLowerCase().trim();
-            const filtered = catalogProducts.filter(p => 
-                p.name.toLowerCase().includes(keyword) || 
-                p.category.toLowerCase().includes(keyword) ||
-                p.desc.toLowerCase().includes(keyword)
-            );
-            renderProducts(filtered);
-        });
-
-        // Form Submission & WA Integration Logic
-        orderForm.addEventListener("submit", function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById("customerName").value.trim();
-            const productId = selectedItemSelect.value;
-            let qty = parseInt(itemQtyInput.value, 10);
-            if (isNaN(qty) || qty < 1) qty = 1;
-
-            const branch = document.getElementById("branchSelect").value;
-            const notes = document.getElementById("itemNotes").value.trim();
-
-            if (!name || !productId || !branch) {
-                alert("Silakan lengkapi data pemesanan.");
-                return;
-            }
-
-            const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
-            const productName = selectedOpt ? selectedOpt.dataset.name : "Menu";
-            const unitPrice = selectedOpt ? parseFloat(selectedOpt.dataset.price) : 0;
-            const totalPrice = unitPrice * qty;
-
-            const orderId = "HB-ORD-" + Math.floor(10000 + Math.random() * 90000);
-
-            // Simpan Riwayat Pesanan
-            const orderPayload = {
-                id: orderId,
-                customer: name,
-                item: productName,
-                qty: qty,
-                total: totalPrice,
-                branch: branch,
-                notes: notes || "-",
-                timestamp: new Date().toISOString()
-            };
-            
-            try {
-                localStorage.setItem("last_hb_order", JSON.stringify(orderPayload));
-            } catch (err) {
-                console.warn("Storage tidak didukung atau penuh:", err);
-            }
-
-            // Format Pesan WA Resmi
-            let message = `Halo Holland Bangka, saya ingin memesan:\n\n`;
-            message += `*ID Pesanan:* ${orderId}\n`;
-            message += `*Nama:* ${name}\n`;
-            message += `*Menu:* ${productName}\n`;
-            message += `*Jumlah:* ${qty} Porsi\n`;
-            message += `*Estimasi Subtotal:* Rp ${formatRupiah(totalPrice)}\n`;
-            message += `*Cabang Tujuan:* ${branch}\n`;
-            if (notes) {
-                message += `*Catatan:* ${notes}\n`;
-            }
-            message += `\nMohon konfirmasi pesanan saya. Terima kasih!`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const waUrl = `https://wa.me/${CLIENT_WA_NUMBER}?text=${encodedMessage}`;
-
-            window.open(waUrl, "_blank");
-        });
-
-        // Initial Load
-        document.addEventListener("DOMContentLoaded", () => {
-            renderProducts(catalogProducts);
-            populateSelectOptions();
-            floatingWaBtn.href = `https://wa.me/${CLIENT_WA_NUMBER}?text=${encodeURIComponent("Halo Holland Bangka, saya ingin bertanya tentang menu.")}`;
-        });
-    </script>
+<div class="top">HOLLAND BANGKA · MARTABAK & TERANG BULAN</div>
+<header class="header"><div class="wrap head">
+<a class="brand" href="#beranda" aria-label="HOLLAND BANGKA beranda"><span class="mark" aria-label="Holland Bangka — logo sementara berbasis monogram">HB</span><span>HOLLAND BANGKA<small>MARTABAK & TERANG BULAN</small></span></a>
+<nav class="nav" aria-label="Navigasi utama"><a href="#menu">Menu</a><a href="#pesan">Pesan</a><a href="#tentang">Tentang</a></nav>
+<a class="btn" href="#pesan">Mulai Pesan ↓</a>
+</div></header>
+<main>
+<section class="hero" id="beranda"><div class="wrap hero-grid"><div>
+<div class="eyebrow">Martabak · Terang Bulan</div>
+<h1>Teman manis<br>di setiap momen.</h1>
+<p>Jelajahi pilihan martabak dan terang bulan HOLLAND BANGKA. Pilih menu, isi detail pesanan, lalu konfirmasi langsung ke outlet setelah kanal pemesanan resmi tersedia.</p>
+<div class="hero-actions"><a class="btn" href="#menu">Lihat Menu</a><a class="btn outline" href="#tentang">Profil Usaha</a></div>
+</div><div class="hero-art" role="img" aria-label="Ilustrasi dekoratif martabak bernuansa cokelat dan keemasan"><div class="plate"><span>HOLLAND<br>BANGKA</span></div><div class="art-tag">MARTABAK & TERANG BULAN</div></div></div></section>
+<section class="section" id="menu"><div class="wrap"><div class="section-head"><div class="eyebrow">Pilihan menu</div><h2>Temukan favoritmu</h2><p>Menu di bawah adalah contoh struktur katalog. Nama, varian, bahan, ukuran, dan harga wajib dikonfirmasi ke pihak usaha sebelum publikasi.</p></div>
+<div class="menu-tools"><div class="filters" role="group" aria-label="Filter kategori"><button class="filter active" data-filter="all" type="button">Semua</button><button class="filter" data-filter="manis" type="button">Terang Bulan</button><button class="filter" data-filter="gurih" type="button">Martabak Gurih</button></div><input id="searchMenu" class="search" type="search" placeholder="Cari menu..." aria-label="Cari menu"></div>
+<div class="menu-grid" id="menuGrid"></div>
+<p class="disclaimer">Harga, ukuran, topping, ketersediaan, dan bahan menu belum diverifikasi. Hubungi outlet untuk informasi aktual.</p>
+</div></section>
+<section class="section" id="cabang"><div class="wrap"><div class="section-head"><div class="eyebrow">Referensi cabang offline</div><h2>Temukan lapak & cek foto</h2><p>Lokasi berikut berasal dari listing publik. Pastikan nama merek dan cabang cocok sebelum datang, karena terdapat usaha bernama mirip.</p></div><div class="about-grid"><div class="about-card"><h3>Dukuh Menanggal</h3><p><strong>Alamat listing Grab:</strong> Jl. Dukuh Menanggal III No. 21, Dukuh Menanggal, Gayungan, Surabaya 60234.</p><p><strong>Jam yang tercantum:</strong> setiap hari 16.30–23.59 (periksa ulang di Grab).</p><p><a class="social-link" href="https://dineout.grab.com/id/id/restaurants/holland-bangka-martabak-terangbulan-dukuh-menanggal--6-C3BDJ6EJCB3WLA" target="_blank" rel="noopener noreferrer">Buka listing, menu & galeri Grab ↗</a></p></div><div class="about-card"><h3>Holland Bangka — Candi</h3><p><strong>Listing GoFood:</strong> Holland Bangka, Candi. Menu “Biasa keju coklat” tercantum Rp50.000 di halaman yang terindeks.</p><p><a class="social-link" href="https://alpha.gofood.co.id/surabaya/restaurant/holland-bangka-candi-2810d8be-257c-4268-9574-daaa8741ef3a" target="_blank" rel="noopener noreferrer">Buka menu GoFood & foto listing ↗</a></p></div><div class="about-card"><h3>Sawunggaling</h3><p><strong>Referensi menu:</strong> listing pihak ketiga memperlihatkan terang bulan dan martabak telur beserta harga. Ini bukan jaminan lapak aktif hari ini.</p><p><a class="social-link" href="https://menukuliner.net/menu/979933/holland-bangka-martabak-terang-bulan-sawunggaling" target="_blank" rel="noopener noreferrer">Buka referensi menu Sawunggaling ↗</a></p><p><a class="social-link" href="https://www.google.com/maps/search/?api=1&query=Holland+Bangka+Sawunggaling+Surabaya" target="_blank" rel="noopener noreferrer">Cari foto lapak di Maps ↗</a></p></div><div class="about-card"><h3>Sungon</h3><p><strong>Referensi menu:</strong> terang bulan biasa besar Rp15.000–Rp40.000 menurut varian yang tercantum; listing diperbarui Juli 2026.</p><p><a class="social-link" href="https://menukuliner.net/menu/993206/martabak-holland-bangka-sungon" target="_blank" rel="noopener noreferrer">Buka referensi menu Sungon ↗</a></p><p><a class="social-link" href="https://www.google.com/maps/search/?api=1&query=Martabak+Holland+Bangka+Sungon+Surabaya" target="_blank" rel="noopener noreferrer">Cari foto lapak di Maps ↗</a></p></div></div><p class="disclaimer">Foto lapak/makanan ditautkan ke galeri/listing asal agar sumber dan cabangnya tetap jelas. Gambar yang tidak dapat dipastikan berasal dari cabang terkait tidak disajikan sebagai foto resmi.</p></div></section>
+<section class="section" id="referensi-harga"><div class="wrap"><div class="section-head"><div class="eyebrow">Referensi harga</div><h2>Menu & kisaran harga per listing</h2><p>Harga bukan harga final seluruh cabang. Tiap baris mencantumkan sumber dan cabang agar tidak mencampur harga antarlokasi.</p></div><div class="about-grid"><div class="about-card"><h3>Menu harga — Sawunggaling</h3><p><strong>Promo:</strong> Biasa ayam (2 telur) Rp25.000; Spesial sapi (3 telur) Rp35.000; Keju coklat besar Rp30.000; Spesial coklat kacang Rp35.000; Sapi kornet spesial Rp55.000; Tiramisu keju besar Rp35.000.</p><p><a class="social-link" href="https://menukuliner.net/menu/979933/holland-bangka-martabak-terang-bulan-sawunggaling" target="_blank" rel="noopener noreferrer">Sumber menu Sawunggaling ↗</a></p><h3 style="margin-top:22px">Menu harga — Sungon</h3><p>Polos susu besar Rp15.000; coklat polos besar Rp23.000; campur besar Rp28.000; coklat kacang besar Rp26.000; keju coklat besar Rp29.000; keju polos besar Rp25.000; keju campur besar Rp31.000; Oreo keju besar Rp35.000; Tiramisu Oreo besar Rp40.000.</p><p><a class="social-link" href="https://menukuliner.net/menu/993206/martabak-holland-bangka-sungon" target="_blank" rel="noopener noreferrer">Sumber menu Sungon ↗</a></p></div><div class="about-card"><h3>Menu harga — Imam Bonjol & Candi</h3><p><strong>Imam Bonjol:</strong> Martabak biasa ayam 2 telur Rp25.000; ayam keju Rp30.000; sapi Rp30.000; sapi keju Rp35.000 (menurut direktori menu).</p><p><a class="social-link" href="https://menukuliner.net/menu/993682/martabak-terang-bulan-holland-bangka-imam-bonjol" target="_blank" rel="noopener noreferrer">Sumber menu Imam Bonjol ↗</a></p><p><strong>GoFood Candi:</strong> Biasa keju coklat tercantum Rp50.000 di halaman publik yang terindeks. Harga bisa berubah berdasarkan akun, promo, waktu, dan alamat pengantaran.</p><p><a class="social-link" href="https://alpha.gofood.co.id/surabaya/restaurant/holland-bangka-candi-2810d8be-257c-4268-9574-daaa8741ef3a" target="_blank" rel="noopener noreferrer">Sumber GoFood Candi ↗</a></p><p><strong>GrabFood/Grab Dine Out:</strong> listing Dukuh Menanggal menampilkan nama beberapa varian martabak telur, tetapi harga tidak tampil pada halaman publik yang dapat dibaca.</p><p><a class="social-link" href="https://dineout.grab.com/id/id/restaurants/holland-bangka-martabak-terangbulan-dukuh-menanggal--6-C3BDJ6EJCB3WLA" target="_blank" rel="noopener noreferrer">Sumber Grab Dukuh Menanggal ↗</a></p><p><strong>ShopeeFood:</strong> harga spesifik Holland Bangka belum dapat dipasangkan dengan cabang terverifikasi dari halaman publik yang terindeks. Tidak ada harga ShopeeFood yang direka.</p></div></div><p class="disclaimer">Listing direktori pihak ketiga bisa usang. Gunakan harga dan ketersediaan yang tampil di aplikasi setelah memilih alamat/cabang tujuan.</p></div></section>
+<section class="section order-section" id="pesan"><div class="wrap order-grid">
+<div class="order-intro"><div class="eyebrow" style="color:var(--gold)">Pemesanan</div><h2>Siapkan pesananmu.</h2><p>Form ini membantu merangkum pilihan pelanggan. Kirim ringkasan pesanan melalui WhatsApp Pusat Wifi. Pusat Wifi bukan outlet Holland Bangka; pastikan nomor ini memang menjadi perantara pemesanan sebelum digunakan pelanggan.</p><ul><li>Pilih menu dan jumlah</li><li>Masukkan nama dan kontak pemesan</li><li>Kirim ringkasan pesanan melalui WhatsApp</li></ul><div class="notice">WhatsApp diarahkan ke nomor Pusat Wifi Indonesia sesuai permintaan pemilik website, bukan nomor resmi outlet Holland Bangka. Konfirmasi harga, cabang, ongkir, dan penerimaan pesanan sebelum membayar.</div></div>
+<form class="form-card" id="orderForm"><h3>Detail pesanan</h3><div class="form-grid">
+<div class="field full"><label for="item">Menu pilihan *</label><select id="item" name="item" required><option value="">Pilih menu</option></select></div>
+<div class="field"><label for="qty">Jumlah *</label><input id="qty" name="qty" type="number" min="1" max="30" value="1" required><small id="subtotal" class="price" aria-live="polite">Estimasi subtotal: —</small></div>
+<div class="field"><label for="customerName">Nama pemesan *</label><input id="customerName" name="customerName" autocomplete="name" maxlength="80" required placeholder="Nama Anda"></div>
+<div class="field"><label for="customerPhone">Nomor telepon *</label><input id="customerPhone" name="customerPhone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" required placeholder="Nomor yang bisa dihubungi"></div>
+<div class="field"><label for="fulfillment">Metode menerima *</label><select id="fulfillment" name="fulfillment" required><option value="">Pilih metode</option><option value="Ambil sendiri">Ambil sendiri</option><option value="Pengantaran (konfirmasi outlet)">Pengantaran (konfirmasi outlet)</option></select></div>
+<div class="field full"><label for="address">Alamat / catatan lokasi (jika perlu)</label><input id="address" name="address" maxlength="180" placeholder="Alamat atau patokan lokasi"></div>
+<div class="field full"><label for="notes">Catatan pesanan</label><textarea id="notes" name="notes" maxlength="500" placeholder="Contoh: potong 8, tanpa tambahan tertentu. Ketersediaan perlu dikonfirmasi outlet."></textarea></div>
+</div><label class="checkrow"><input type="checkbox" id="consent" required><span>Saya memahami WhatsApp tujuan adalah nomor Pusat Wifi Indonesia, bukan nomor resmi Holland Bangka. Pesanan belum terkonfirmasi sampai dibalas.</span></label><button class="btn" type="submit">Lanjutkan ke WhatsApp</button><div class="notice" id="formNotice" role="status">Ringkasan akan dibuka di WhatsApp Pusat Wifi Indonesia (+62 812-1414-1914). Harga yang tampil hanya referensi dan harus dikonfirmasi.</div></form>
+</div></section>
+<section class="section" id="riwayat"><div class="wrap"><div class="section-head"><div class="eyebrow">Riwayat perangkat</div><h2>Ringkasan pesanan demo</h2><p>Riwayat hanya tersimpan pada browser/perangkat yang digunakan. Tidak tersinkron ke outlet atau perangkat lain.</p></div><div class="orders"><h3>Pesanan tersimpan</h3><div id="orderHistory"><div class="empty">Belum ada ringkasan pesanan yang disimpan.</div></div><button type="button" class="btn outline" id="clearOrders" style="margin-top:16px">Hapus riwayat lokal</button></div></div></section>
+<section class="section" id="tentang"><div class="wrap about-grid"><div><div class="eyebrow">Tentang usaha</div><h2 style="font:700 clamp(30px,4vw,43px)/1.15 'Playfair Display',serif;color:var(--wine);margin:10px 0 14px">HOLLAND BANGKA</h2><p style="color:var(--muted)">Halaman katalog referensi HOLLAND BANGKA yang menggabungkan data listing publik per cabang. Data platform/direktori bukan pernyataan resmi pemilik; konfirmasikan cabang, harga, jam, dan stok di kanal transaksi sebelum datang atau memesan.</p><a class="social-link" href="https://www.instagram.com/hollandbangka_official/" target="_blank" rel="noopener noreferrer">Lihat Instagram yang diberikan ↗</a></div><div class="about-card"><h3>Informasi outlet</h3><p><strong>Cabang:</strong> Lihat daftar cabang dan alamat listing di bagian “Lapak & foto”.</p><p><strong>Jam operasional:</strong> Berbeda per cabang; cek aplikasi/peta pada hari kunjungan.</p><p><strong>WhatsApp pemesanan perantara:</strong> +62 812-1414-1914 (Pusat Wifi Indonesia), bukan nomor resmi Holland Bangka.</p><p><strong>Harga/menu:</strong> Konfirmasi langsung ke usaha; contoh katalog belum dianggap menu resmi.</p></div></div></section>
+</main>
+<footer class="footer"><div class="wrap"><div class="foot-grid"><div><a class="brand" href="#beranda"><span class="mark" aria-label="Holland Bangka — logo sementara berbasis monogram">HB</span><span>HOLLAND BANGKA<small>MARTABAK & TERANG BULAN</small></span></a><p>Katalog referensi publik. Harga dan status cabang dapat berubah; periksa sumber per cabang sebelum transaksi.</p></div><div><a href="https://www.instagram.com/hollandbangka_official/" target="_blank" rel="noopener noreferrer">Instagram resmi yang diberikan ↗</a><p>WhatsApp perantara: +62 812-1414-1914 (Pusat Wifi Indonesia), bukan nomor resmi outlet.</p></div></div><div class="copyright"><span>© <span id="year"></span> HOLLAND BANGKA</span><span>Katalog referensi — pesan melalui WhatsApp perantara; konfirmasi manual wajib.</span></div></div></footer>
+<a class="btn wa-float" href="https://wa.me/6281214141914?text=Halo%20Pusat%20Wifi%20Indonesia%2C%20saya%20ingin%20bertanya%20tentang%20katalog%20Holland%20Bangka." target="_blank" rel="noopener noreferrer" aria-label="Hubungi WhatsApp Pusat Wifi Indonesia">WhatsApp</a><div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const MENU=[
+{id:"tb-coklat-susu",category:"manis",type:"Terang Bulan · Biasa Besar",name:"Coklat Polos Besar",description:"Cokelat dan susu. Referensi listing Holland Bangka Imam Bonjol.",priceLabel:"Rp25.000 · referensi direktori",price:25000,source:"Imam Bonjol"},
+{id:"tb-keju-coklat",category:"manis",type:"Terang Bulan · Biasa Besar",name:"Keju Coklat Besar",description:"Keju, cokelat, dan susu. Referensi listing Holland Bangka Imam Bonjol.",priceLabel:"Rp30.000 · referensi direktori",price:30000,source:"Imam Bonjol"},
+{id:"tb-keju-campur",category:"manis",type:"Terang Bulan · Biasa Besar",name:"Keju Campur Besar",description:"Keju, cokelat, kacang, dan susu. Referensi listing Holland Bangka Imam Bonjol.",priceLabel:"Rp33.000 · referensi direktori",price:33000,source:"Imam Bonjol"},
+{id:"tb-milo-keju",category:"manis",type:"Terang Bulan · Spesial Besar",name:"Spesial Milo Keju Besar",description:"Milo, keju, susu, dan butter menurut deskripsi listing.",priceLabel:"Rp38.000 · referensi direktori",price:38000,source:"Imam Bonjol"},
+{id:"mtb-ayam-biasa",category:"gurih",type:"Martabak telur · Biasa",name:"Martabak Biasa Ayam",description:"Daging ayam dan 2 telur menurut listing direktori.",priceLabel:"Rp25.000 · referensi direktori",price:25000,source:"Imam Bonjol"},
+{id:"mtb-sapi-biasa",category:"gurih",type:"Martabak telur · Biasa",name:"Martabak Biasa Sapi",description:"Daging sapi dan 2 telur menurut listing direktori.",priceLabel:"Rp30.000 · referensi direktori",price:30000,source:"Imam Bonjol"},
+{id:"mtb-sapi-special",category:"gurih",type:"Martabak telur · Spesial",name:"Martabak Spesial Sapi",description:"Daging sapi dan 3 telur menurut listing direktori.",priceLabel:"Rp35.000 · referensi direktori",price:35000,source:"Imam Bonjol"},
+{id:"mtb-sapi-super",category:"gurih",type:"Martabak telur · Super",name:"Martabak Super Sapi",description:"Daging sapi dan 4 telur menurut listing direktori.",priceLabel:"Rp40.000 · referensi direktori",price:40000,source:"Imam Bonjol"}
+];
+const STORAGE_KEY="hollandBangkaOrderDraftsV2";
+const $=id=>document.getElementById(id);
+let activeFilter="all",toastTimer=null;
+function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function showToast(message){const el=$("toast");el.textContent=message;el.classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.add("hidden"),4200);}
+function renderMenu(){
+ const query=$("searchMenu").value.trim().toLocaleLowerCase("id");
+ const list=MENU.filter(m=>(activeFilter==="all"||m.category===activeFilter)&&(`${m.name} ${m.type} ${m.description}`).toLocaleLowerCase("id").includes(query));
+ $("menuGrid").innerHTML=list.length?list.map(m=>`<article class="food-card"><div class="food-visual"><div class="food-placeholder" aria-label="Ilustrasi makanan, bukan foto produk Holland Bangka"><span>Foto menu<br>lihat sumber cabang</span></div><span>${m.category==="manis"?"Terang Bulan":"Martabak"}</span><small class="photo-note">Ilustrasi katalog · cek foto cabang di sumber</small></div><div class="food-body"><div class="food-type">${escapeHTML(m.type)}</div><h3>${escapeHTML(m.name)}</h3><p>${escapeHTML(m.description)}</p><div class="food-foot"><span class="price">${escapeHTML(m.priceLabel)}</span><button type="button" data-add="${escapeHTML(m.id)}">Pilih menu</button></div></div></article>`).join(""):'<div class="empty">Menu tidak ditemukan. Coba kata kunci lain.</div>';
+}
+function renderSelect(){ $("item").innerHTML='<option value="">Pilih menu</option>'+MENU.map(m=>`<option value="${escapeHTML(m.id)}">${escapeHTML(m.name)}</option>`).join("");}
+function readOrders(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(data)?data.filter(x=>x&&typeof x==="object"&&typeof x.id==="string"):[]}catch{return []}}
+function saveOrders(items){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(items));return true}catch{return false}}
+function renderHistory(){
+ const rows=readOrders();
+ $("orderHistory").innerHTML=rows.length?`<table><thead><tr><th>ID demo</th><th>Menu</th><th>Jumlah</th><th>Estimasi subtotal</th><th>Pemesan</th><th>Metode</th><th>Status</th></tr></thead><tbody>${rows.slice().reverse().map(o=>`<tr><td>${escapeHTML(o.id)}</td><td>${escapeHTML(o.menu)}</td><td>${escapeHTML(o.qty)}</td><td>${escapeHTML(new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(o.estimatedSubtotal||0))}*</td><td>${escapeHTML(o.name)}</td><td>${escapeHTML(o.fulfillment)}</td><td><span class="status">Draft lokal</span></td></tr>`).join("")}</tbody></table><p class="disclaimer">*Estimasi berdasarkan harga referensi direktori, bukan harga final outlet/platform.</p>`:'<div class="empty">Belum ada ringkasan pesanan yang disimpan.</div>';
+}
+document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{activeFilter=btn.dataset.filter;document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b===btn));renderMenu()}));
+$("searchMenu").addEventListener("input",renderMenu);
+$("menuGrid").addEventListener("click",e=>{const btn=e.target.closest("[data-add]");if(!btn)return;$("item").value=btn.dataset.add;$("pesan").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});$("item").focus({preventScroll:true});});
+$("orderForm").addEventListener("submit",e=>{
+ e.preventDefault();const form=e.currentTarget;if(!form.reportValidity())return;
+ const menu=MENU.find(m=>m.id===$("item").value);if(!menu){showToast("Pilih menu terlebih dahulu.");return;}
+ const order={id:"HB-DEMO-"+Date.now().toString(36).toUpperCase(),menu:menu.name,unitReferencePrice:menu.price,estimatedSubtotal:menu.price*Number($("qty").value),priceSource:menu.source,qty:Number($("qty").value),name:$("customerName").value.trim(),phone:$("customerPhone").value.trim(),fulfillment:$("fulfillment").value,address:$("address").value.trim(),notes:$("notes").value.trim(),createdAt:new Date().toISOString(),status:"Draft lokal"};
+ if(!Number.isInteger(order.qty)||order.qty<1||order.qty>30){showToast("Jumlah harus antara 1 sampai 30.");return;}
+ const rows=readOrders();rows.push(order);if(!saveOrders(rows)){showToast("Browser tidak mengizinkan penyimpanan. Ringkasan tidak tersimpan.");return;}
+ const formatIDR=n=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
+ const message=["Halo Pusat Wifi Indonesia, saya ingin meneruskan permintaan pesanan Holland Bangka.","",`Nama: ${order.name}`,`Telepon pelanggan: ${order.phone}`,`Menu: ${order.menu}`,`Jumlah: ${order.qty}`,`Estimasi harga referensi: ${formatIDR(order.estimatedSubtotal)}`,`Metode: ${order.fulfillment}`,`Alamat/catatan lokasi: ${order.address||"Belum diisi"}`,`Catatan: ${order.notes||"-"}`,"", "Mohon bantu konfirmasi cabang, harga terkini, ongkir, ketersediaan, dan apakah pesanan dapat diterima. Saya memahami nomor WhatsApp tujuan adalah Pusat Wifi Indonesia, bukan nomor resmi outlet Holland Bangka."].join("\n");
+ const waURL="https://wa.me/6281214141914?text="+encodeURIComponent(message);
+ const opened=window.open(waURL,"_blank","noopener,noreferrer");
+ form.reset();$("qty").value="1";renderHistory();updateSubtotal();showToast(opened?"WhatsApp terbuka dengan ringkasan pesanan. Pesanan belum terkonfirmasi.":"Jika WhatsApp tidak terbuka, izinkan pop-up lalu coba kembali.");
+});
+$("clearOrders").addEventListener("click",()=>{if(!confirm("Hapus seluruh riwayat demo yang tersimpan pada browser ini?"))return;try{localStorage.removeItem(STORAGE_KEY);renderHistory();showToast("Riwayat lokal dihapus.")}catch{showToast("Tidak dapat menghapus penyimpanan browser.")}});
+function updateSubtotal(){const m=MENU.find(x=>x.id===$("item").value);const q=Number($("qty").value);$("subtotal").textContent=m&&Number.isInteger(q)&&q>0&&q<=30?"Estimasi subtotal referensi: "+new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(m.price*q):"Estimasi subtotal: —";}
+$("item").addEventListener("change",updateSubtotal);$("qty").addEventListener("input",updateSubtotal);
+$("year").textContent=new Date().getFullYear();renderMenu();renderSelect();renderHistory();updateSubtotal();
+</script>
 </body>
 </html>
