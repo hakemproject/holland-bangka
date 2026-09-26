@@ -1,0 +1,238 @@
+<script>
+  "use strict";
+
+  // Data Menu (Silakan sesuaikan isi data dan path foto)
+  const MENU = [
+    { id: "tb-coklat-susu", category: "manis", type: "Terang Bulan · Biasa Besar", name: "Coklat Polos Besar", description: "Cokelat messes manis dengan lumeran susu kental manis.", priceLabel: "Rp 25.000", price: 25000, image: "img/coklat-susu.jpg" },
+    { id: "tb-keju-coklat", category: "manis", type: "Terang Bulan · Biasa Besar", name: "Keju Coklat Besar", description: "Kombinasi keju parut melimpah dan cokelat messes.", priceLabel: "Rp 30.000", price: 30000, image: "img/keju-coklat.jpg" },
+    { id: "mtb-ayam-biasa", category: "gurih", type: "Martabak Telur · Biasa", name: "Martabak Biasa Ayam", description: "Martabak telur renyah isi daging ayam cincang dan 2 telur.", priceLabel: "Rp 25.000", price: 25000, image: "" }
+  ];
+
+  // Konfigurasi Outlet / Klien
+  const CLIENT_WA = "6281234567890"; // Ganti dengan nomor WA outlet asli
+  const CLIENT_NAME = "Holland Bangka";
+  const STORAGE_KEY = "hollandBangkaOrdersV1";
+
+  const $ = id => document.getElementById(id);
+  let activeFilter = "all", toastTimer = null;
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function showToast(message) {
+    const el = $("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.add("hidden"), 4200);
+  }
+
+  // Render Kartu Menu (Mendukung Foto Produk + Fallback Placeholder)
+  function renderMenu() {
+    const searchEl = $("searchMenu");
+    const query = searchEl ? searchEl.value.trim().toLocaleLowerCase("id") : "";
+    const list = MENU.filter(m => 
+      (activeFilter === "all" || m.category === activeFilter) && 
+      (`${m.name} ${m.type} ${m.description}`).toLocaleLowerCase("id").includes(query)
+    );
+    
+    const grid = $("menuGrid");
+    if (!grid) return;
+
+    grid.innerHTML = list.length ? list.map(m => `
+      <article class="food-card">
+        <div class="food-visual">
+          ${m.image 
+            ? `<img src="${escapeHTML(m.image)}" alt="${escapeHTML(m.name)}" loading="lazy" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'food-placeholder\\'><span>${escapeHTML(m.name)}</span></div>';">` 
+            : `<div class="food-placeholder"><span>${escapeHTML(m.name)}</span></div>`
+          }
+          <span>${m.category === "manis" ? "Terang Bulan" : "Martabak"}</span>
+        </div>
+        <div class="food-body">
+          <div class="food-type">${escapeHTML(m.type)}</div>
+          <h3>${escapeHTML(m.name)}</h3>
+          <p>${escapeHTML(m.description)}</p>
+          <div class="food-foot">
+            <span class="price">${escapeHTML(m.priceLabel)}</span>
+            <button type="button" data-add="${escapeHTML(m.id)}">Pilih menu</button>
+          </div>
+        </div>
+      </article>
+    `).join("") : '<div class="empty">Menu tidak ditemukan. Coba kata kunci lain.</div>';
+  }
+
+  function renderSelect() {
+    const sel = $("item");
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Pilih menu...</option>' + 
+      MENU.map(m => `<option value="${escapeHTML(m.id)}">${escapeHTML(m.name)} — ${escapeHTML(m.priceLabel)}</option>`).join("");
+  }
+
+  function readOrders() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(data) ? data.filter(x => x && typeof x === "object" && typeof x.id === "string") : [];
+    } catch { return []; }
+  }
+
+  function saveOrders(items) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); return true; } catch { return false; }
+  }
+
+  function renderHistory() {
+    const target = $("orderHistory");
+    if (!target) return;
+    const rows = readOrders();
+    target.innerHTML = rows.length ? `
+      <table>
+        <thead>
+          <tr>
+            <th>No. Pesanan</th>
+            <th>Menu</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
+            <th>Pemesan</th>
+            <th>Metode</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.slice().reverse().map(o => `
+            <tr>
+              <td><strong>${escapeHTML(o.id)}</strong></td>
+              <td>${escapeHTML(o.menu)}</td>
+              <td>${escapeHTML(o.qty)}</td>
+              <td>${escapeHTML(new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(o.estimatedSubtotal || 0))}</td>
+              <td>${escapeHTML(o.name)}</td>
+              <td>${escapeHTML(o.fulfillment)}</td>
+              <td><span class="status">Terkirim ke WA</span></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    ` : '<div class="empty">Belum ada riwayat pesanan di perangkat ini.</div>';
+  }
+
+  // Perbaikan Logika: Hitung Subtotal Otomatis
+  function updateSubtotal() {
+    const itemEl = $("item");
+    const qtyEl = $("qty");
+    const subEl = $("subtotal");
+    if (!itemEl || !qtyEl || !subEl) return;
+
+    const m = MENU.find(x => x.id === itemEl.value);
+    const q = Number(qtyEl.value);
+    subEl.textContent = m && Number.isInteger(q) && q > 0 && q <= 30 
+      ? "Estimasi subtotal: " + new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(m.price * q)
+      : "Estimasi subtotal: —";
+  }
+
+  // Event Listeners
+  document.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", () => {
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach(b => b.classList.toggle("active", b === btn));
+    renderMenu();
+  }));
+
+  if ($("searchMenu")) $("searchMenu").addEventListener("input", renderMenu);
+
+  // Perbaikan Bug Logika: Klik "Pilih menu" langsung mengisi form + update subtotal
+  if ($("menuGrid")) {
+    $("menuGrid").addEventListener("click", e => {
+      const btn = e.target.closest("[data-add]");
+      if (!btn) return;
+      if ($("item")) $("item").value = btn.dataset.add;
+      updateSubtotal();
+      
+      const formSec = $("pesan") \vert{}\vert{} $("orderForm");
+      if (formSec) {
+        const isReduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        formSec.scrollIntoView({ behavior: isReduce ? "auto" : "smooth" });
+      }
+      if ($("item")) $("item").focus({ preventScroll: true });
+    });
+  }
+
+  // Event Submit Form Pemesanan
+  if ($("orderForm")) {
+    $("orderForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      if (!form.reportValidity()) return;
+
+      const menu = MENU.find(m => m.id === ($("item") ? $("item").value : ""));
+      if (!menu) { showToast("Silakan pilih menu terlebih dahulu."); return; }
+
+      const order = {
+        id: "HB-ORD-" + Date.now().toString(36).toUpperCase(),
+        menu: menu.name,
+        estimatedSubtotal: menu.price * Number($("qty").value),
+        qty: Number($("qty").value),
+        name: $("customerName") ? $("customerName").value.trim() : "",
+        phone: $("customerPhone") ? $("customerPhone").value.trim() : "",
+        fulfillment: $("fulfillment") ? $("fulfillment").value : "",
+        address: $("address") ? $("address").value.trim() : "",
+        notes: $("notes") ? $("notes").value.trim() : "",
+        createdAt: new Date().toISOString()
+      };
+
+      if (!Number.isInteger(order.qty) || order.qty < 1 || order.qty > 30) {
+        showToast("Jumlah pemesanan harus antara 1 sampai 30 porsi.");
+        return;
+      }
+
+      const rows = readOrders();
+      rows.push(order);
+      saveOrders(rows);
+
+      const formatIDR = n => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+      
+      const message = [
+        `Halo ${CLIENT_NAME}, saya mau pesan:`,
+        "",
+        `*ID Pesanan:* ${order.id}`,
+        `*Nama Pemesan:* ${order.name}`,
+        `*No. HP:* ${order.phone}`,
+        `*Menu Pesanan:* ${order.menu} (${order.qty} porsi)`,
+        `*Estimasi Subtotal:* ${formatIDR(order.estimatedSubtotal)}`,
+        `*Metode Pengiriman:* ${order.fulfillment}`,
+        `*Alamat/Lokasi:* ${order.address || "-"}`,
+        `*Catatan:* ${order.notes || "-"}`,
+        "",
+        "Mohon konfirmasi pesanan dan ketersediaannya. Terima kasih!"
+      ].join("\n");
+
+      const waURL = `https://wa.me/${CLIENT_WA}?text=` + encodeURIComponent(message);
+      const opened = window.open(waURL, "_blank", "noopener,noreferrer");
+
+      form.reset();
+      if ($("qty")) $("qty").value = "1";
+      renderHistory();
+      updateSubtotal();
+      showToast(opened ? "Membuka WhatsApp..." : "Jika WhatsApp tidak terbuka, izinkan pop-up browser.");
+    });
+  }
+
+  if ($("clearOrders")) {
+    $("clearOrders").addEventListener("click", () => {
+      if (!confirm("Hapus seluruh riwayat pesanan lokal?")) return;
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+        showToast("Riwayat pesanan berhasil dihapus.");
+      } catch { showToast("Gagal menghapus penyimpanan."); }
+    });
+  }
+
+  if ($("item")) $("item").addEventListener("change", updateSubtotal);
+  if ($("qty")) $("qty").addEventListener("input", updateSubtotal);
+  if ($("year")) $("year").textContent = new Date().getFullYear();
+
+  // Inisialisasi Awal
+  renderMenu();
+  renderSelect();
+  renderHistory();
+  updateSubtotal();
+</script>
