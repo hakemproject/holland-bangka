@@ -1,238 +1,526 @@
-<script>
-  "use strict";
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holland Bangka - Terang Bulan & Martabak</title>
+    <meta name="description" content="Katalog resmi Holland Bangka. Nikmati Terang Bulan dan Martabak Telur lezat dengan berbagai pilihan rasa.">
+    <meta name="theme-color" content="#6b1d2f">
 
-  // Data Menu (Silakan sesuaikan isi data dan path foto)
-  const MENU = [
-    { id: "tb-coklat-susu", category: "manis", type: "Terang Bulan · Biasa Besar", name: "Coklat Polos Besar", description: "Cokelat messes manis dengan lumeran susu kental manis.", priceLabel: "Rp 25.000", price: 25000, image: "img/coklat-susu.jpg" },
-    { id: "tb-keju-coklat", category: "manis", type: "Terang Bulan · Biasa Besar", name: "Keju Coklat Besar", description: "Kombinasi keju parut melimpah dan cokelat messes.", priceLabel: "Rp 30.000", price: 30000, image: "img/keju-coklat.jpg" },
-    { id: "mtb-ayam-biasa", category: "gurih", type: "Martabak Telur · Biasa", name: "Martabak Biasa Ayam", description: "Martabak telur renyah isi daging ayam cincang dan 2 telur.", priceLabel: "Rp 25.000", price: 25000, image: "" }
-  ];
+    <!-- Open Graph -->
+    <meta property="og:title" content="Holland Bangka - Terang Bulan & Martabak">
+    <meta property="og:description" content="Katalog menu dan pemesanan praktis Terang Bulan & Martabak Holland Bangka.">
+    <meta property="og:type" content="website">
 
-  // Konfigurasi Outlet / Klien
-  const CLIENT_WA = "6281234567890"; // Ganti dengan nomor WA outlet asli
-  const CLIENT_NAME = "Holland Bangka";
-  const STORAGE_KEY = "hollandBangkaOrdersV1";
+    <!-- SVG Favicon Data URI -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236b1d2f'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='%23d4af37'>HB</text></svg>">
 
-  const $ = id => document.getElementById(id);
-  let activeFilter = "all", toastTimer = null;
+    <style>
+        :root {
+            --primary: #6b1d2f;
+            --primary-hover: #521523;
+            --gold: #d4af37;
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --surface-card: #282828;
+            --text: #f0f0f0;
+            --text-muted: #a0a0a0;
+            --border: #383838;
+            --radius: 12px;
+        }
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-  function showToast(message) {
-    const el = $("toast");
-    if (!el) return;
-    el.textContent = message;
-    el.classList.remove("hidden");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.add("hidden"), 4200);
-  }
+        html {
+            scroll-behavior: smooth;
+        }
 
-  // Render Kartu Menu (Mendukung Foto Produk + Fallback Placeholder)
-  function renderMenu() {
-    const searchEl = $("searchMenu");
-    const query = searchEl ? searchEl.value.trim().toLocaleLowerCase("id") : "";
-    const list = MENU.filter(m => 
-      (activeFilter === "all" || m.category === activeFilter) && 
-      (`${m.name} ${m.type} ${m.description}`).toLocaleLowerCase("id").includes(query)
-    );
-    
-    const grid = $("menuGrid");
-    if (!grid) return;
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
 
-    grid.innerHTML = list.length ? list.map(m => `
-      <article class="food-card">
-        <div class="food-visual">
-          ${m.image 
-            ? `<img src="${escapeHTML(m.image)}" alt="${escapeHTML(m.name)}" loading="lazy" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'food-placeholder\\'><span>${escapeHTML(m.name)}</span></div>';">` 
-            : `<div class="food-placeholder"><span>${escapeHTML(m.name)}</span></div>`
-          }
-          <span>${m.category === "manis" ? "Terang Bulan" : "Martabak"}</span>
+        header {
+            background: linear-gradient(135deg, var(--primary), #3b0e19);
+            color: var(--gold);
+            text-align: center;
+            padding: 2.5rem 1rem;
+            border-bottom: 3px solid var(--gold);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #e0e0e0;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .info-box {
+            background-color: var(--surface);
+            border-left: 4px solid var(--gold);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .info-box strong {
+            color: var(--gold);
+        }
+
+        .search-section {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background-color: var(--surface);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: 2px solid var(--gold);
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background-color: var(--surface-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .card-img-placeholder {
+            height: 160px;
+            background: linear-gradient(45deg, #3a3a3a, #1f1f1f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.4rem;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .card-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.7rem;
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .order-section {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .order-section h2 {
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background-color: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: 1px solid var(--gold);
+        }
+
+        .subtotal-box {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 1.1rem;
+            padding: 0.5rem 0;
+            border-top: 1px dashed var(--border);
+            margin-top: 0.5rem;
+        }
+
+        .disclaimer {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .float-wa {
+            position: fixed;
+            width: 55px;
+            height: 55px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: #fff;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.7rem; }
+            .catalog-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>HOLLAND BANGKA</h1>
+        <p>Terang Bulan & Martabak Telur Spesial</p>
+    </header>
+
+    <div class="container">
+        <!-- Info Cabang -->
+        <div class="info-box">
+            <strong>Cabang Resmi Pelayanan:</strong> Dukuh Menanggal, Candi, Sawunggaling, & Sungon.<br>
+            <small>Pesanan diproses langsung dari cabang terdekat dengan jaminan kualitas hidangan hangat segar.</small>
         </div>
-        <div class="food-body">
-          <div class="food-type">${escapeHTML(m.type)}</div>
-          <h3>${escapeHTML(m.name)}</h3>
-          <p>${escapeHTML(m.description)}</p>
-          <div class="food-foot">
-            <span class="price">${escapeHTML(m.priceLabel)}</span>
-            <button type="button" data-add="${escapeHTML(m.id)}">Pilih menu</button>
-          </div>
+
+        <!-- Filter Pencarian -->
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari menu (misal: Coklat, Keju, Martabak)...">
         </div>
-      </article>
-    `).join("") : '<div class="empty">Menu tidak ditemukan. Coba kata kunci lain.</div>';
-  }
 
-  function renderSelect() {
-    const sel = $("item");
-    if (!sel) return;
-    sel.innerHTML = '<option value="">Pilih menu...</option>' + 
-      MENU.map(m => `<option value="${escapeHTML(m.id)}">${escapeHTML(m.name)} — ${escapeHTML(m.priceLabel)}</option>`).join("");
-  }
+        <!-- Grid Katalog Menu -->
+        <div id="catalogGrid" class="catalog-grid"></div>
 
-  function readOrders() {
-    try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      return Array.isArray(data) ? data.filter(x => x && typeof x === "object" && typeof x.id === "string") : [];
-    } catch { return []; }
-  }
+        <!-- Form Pemesanan Resmi -->
+        <div class="order-section" id="pesan">
+            <h2>Formulir Pemesanan Resmi</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="customerName">Nama Pemesan</label>
+                    <input type="text" id="customerName" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="selectedItem">Pilih Menu</label>
+                    <select id="selectedItem" class="form-control" required>
+                        <option value="">-- Pilih Menu --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemQty">Jumlah Porsi</label>
+                    <input type="number" id="itemQty" class="form-control" value="1" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="branchSelect">Cabang Tujuan</label>
+                    <select id="branchSelect" class="form-control" required>
+                        <option value="Dukuh Menanggal">Dukuh Menanggal</option>
+                        <option value="Candi">Candi</option>
+                        <option value="Sawunggaling">Sawunggaling</option>
+                        <option value="Sungon">Sungon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemNotes">Catatan Tambahan (Opsional)</label>
+                    <textarea id="itemNotes" class="form-control" rows="3" placeholder="Contoh: Tanpa wijen, matang krispi, dll."></textarea>
+                </div>
 
-  function saveOrders(items) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); return true; } catch { return false; }
-  }
+                <div class="subtotal-box" id="subtotalDisplay">
+                    Estimasi Subtotal: Rp 0
+                </div>
 
-  function renderHistory() {
-    const target = $("orderHistory");
-    if (!target) return;
-    const rows = readOrders();
-    target.innerHTML = rows.length ? `
-      <table>
-        <thead>
-          <tr>
-            <th>No. Pesanan</th>
-            <th>Menu</th>
-            <th>Jumlah</th>
-            <th>Subtotal</th>
-            <th>Pemesan</th>
-            <th>Metode</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.slice().reverse().map(o => `
-            <tr>
-              <td><strong>${escapeHTML(o.id)}</strong></td>
-              <td>${escapeHTML(o.menu)}</td>
-              <td>${escapeHTML(o.qty)}</td>
-              <td>${escapeHTML(new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(o.estimatedSubtotal || 0))}</td>
-              <td>${escapeHTML(o.name)}</td>
-              <td>${escapeHTML(o.fulfillment)}</td>
-              <td><span class="status">Terkirim ke WA</span></td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    ` : '<div class="empty">Belum ada riwayat pesanan di perangkat ini.</div>';
-  }
+                <button type="submit" class="btn" style="background-color: #25d366; color: #fff; margin-top: 1rem;">
+                    Kirim Pesanan via WhatsApp
+                </button>
+            </form>
+        </div>
 
-  // Perbaikan Logika: Hitung Subtotal Otomatis
-  function updateSubtotal() {
-    const itemEl = $("item");
-    const qtyEl = $("qty");
-    const subEl = $("subtotal");
-    if (!itemEl || !qtyEl || !subEl) return;
+        <div class="disclaimer">
+            &copy; Holland Bangka. Katalog & Layanan Pemesanan Langsung WhatsApp.
+        </div>
+    </div>
 
-    const m = MENU.find(x => x.id === itemEl.value);
-    const q = Number(qtyEl.value);
-    subEl.textContent = m && Number.isInteger(q) && q > 0 && q <= 30 
-      ? "Estimasi subtotal: " + new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(m.price * q)
-      : "Estimasi subtotal: —";
-  }
+    <!-- Floating WA Icon -->
+    <a id="floatingWaBtn" href="#" class="float-wa" target="_blank" rel="noopener" aria-label="Chat via WhatsApp">
+        <svg style="width:30px;height:30px" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.19 8.19 0 0 1-1.26-4.38c.01-4.54 3.71-8.24 8.25-8.24m-3.52 4.2c-.19 0-.5.07-.76.35-.26.29-1 1-1 2.43s1.03 2.8 1.17 3c.14.19 2.03 3.1 4.93 4.35.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.11.56-.08 1.72-.7 1.96-1.38.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34s-1.72-.85-1.99-.95c-.27-.1-.46-.15-.65.15-.19.3-.74.95-.91 1.14-.17.19-.34.22-.63.08-.29-.15-1.23-.45-2.35-1.45-.87-.78-1.46-1.74-1.63-2.03-.17-.29-.02-.45.13-.59.13-.13.29-.34.43-.51.15-.17.2-.29.3-.48.1-.19.05-.36-.02-.5-.08-.15-.65-1.57-.9-2.15-.24-.58-.48-.5-.65-.51z"/>
+        </svg>
+    </a>
 
-  // Event Listeners
-  document.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", () => {
-    activeFilter = btn.dataset.filter;
-    document.querySelectorAll("[data-filter]").forEach(b => b.classList.toggle("active", b === btn));
-    renderMenu();
-  }));
+    <script>
+        // KONFIGURASI BISNIS KLIEN
+        const CLIENT_WA_NUMBER = "6281234567890"; // Ganti dengan nomor WhatsApp resmi milik Holland Bangka
 
-  if ($("searchMenu")) $("searchMenu").addEventListener("input", renderMenu);
+        // Data Produk Resmi Holland Bangka (Mendukung foto produk)
+        const catalogProducts = [
+            { id: 1, name: "Terang Bulan Coklat Kacang", category: "Terang Bulan", price: 35000, image: "img/coklat-kacang.jpg", desc: "Adonan lembut premium dengan isian meeres coklat melimpah dan taburan kacang sangrai." },
+            { id: 2, name: "Terang Bulan Keju Susu", category: "Terang Bulan", price: 40000, image: "img/keju-susu.jpg", desc: "Keju parut tebal berpadu manisnya susu kental manis di atas adonan hangat." },
+            { id: 3, name: "Terang Bulan Spesial Kombinasi", category: "Terang Bulan", price: 48000, image: "img/kombinasi.jpg", desc: "Paduan sempurna Coklat, Kacang, Keju, dan Wijen dalam satu porsi mantap." },
+            { id: 4, name: "Terang Bulan Red Velvet Keju", category: "Terang Bulan", price: 52000, image: "img/red-velvet.jpg", desc: "Adonan Red Velvet khas dengan olesan cream cheese dan parutan keju melimpah." },
+            { id: 5, name: "Martabak Telur Daging Sapi (Biasa)", category: "Martabak Telur", price: 38000, image: "img/martabak-biasa.jpg", desc: "Kulit renyah gurih dengan isian 2 telur dan olahan daging sapi cincang bumbu rempah." },
+            { id: 6, name: "Martabak Telur Daging Sapi (Spesial)", category: "Martabak Telur", price: 48000, image: "img/martabak-spesial.jpg", desc: "Isian 3 telur dengan porsi daging sapi lebih tebal dan daun bawang segar." },
+            { id: 7, name: "Martabak Telur Super Meat", category: "Martabak Telur", price: 58000, image: "img/martabak-super.jpg", desc: "Isian 4 telur, ekstra daging sapi pilihan, disajikan lengkap dengan kuah cuko asam manis." },
+            { id: 8, name: "Martabak Mozzarella Melt", category: "Martabak Telur", price: 62000, image: "img/martabak-mozzarella.jpg", desc: "Martabak daging sapi dengan toping keju Mozzarella yang dilelehkan melimpah." }
+        ];
 
-  // Perbaikan Bug Logika: Klik "Pilih menu" langsung mengisi form + update subtotal
-  if ($("menuGrid")) {
-    $("menuGrid").addEventListener("click", e => {
-      const btn = e.target.closest("[data-add]");
-      if (!btn) return;
-      if ($("item")) $("item").value = btn.dataset.add;
-      updateSubtotal();
-      
-      const formSec = $("pesan") \vert{}\vert{} $("orderForm");
-      if (formSec) {
-        const isReduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        formSec.scrollIntoView({ behavior: isReduce ? "auto" : "smooth" });
-      }
-      if ($("item")) $("item").focus({ preventScroll: true });
-    });
-  }
+        // Element Selectors
+        const catalogGrid = document.getElementById("catalogGrid");
+        const searchInput = document.getElementById("searchInput");
+        const selectedItemSelect = document.getElementById("selectedItem");
+        const itemQtyInput = document.getElementById("itemQty");
+        const subtotalDisplay = document.getElementById("subtotalDisplay");
+        const orderForm = document.getElementById("orderForm");
+        const floatingWaBtn = document.getElementById("floatingWaBtn");
 
-  // Event Submit Form Pemesanan
-  if ($("orderForm")) {
-    $("orderForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const form = e.currentTarget;
-      if (!form.reportValidity()) return;
+        // Format Rupiah Helper
+        function formatRupiah(number) {
+            return new Intl.NumberFormat("id-ID").format(number);
+        }
 
-      const menu = MENU.find(m => m.id === ($("item") ? $("item").value : ""));
-      if (!menu) { showToast("Silakan pilih menu terlebih dahulu."); return; }
+        // Render Menu Catalog (Bug 2 Fix: Menampilkan Gambar/Fallback)
+        function renderProducts(items) {
+            catalogGrid.innerHTML = "";
+            if (items.length === 0) {
+                catalogGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">Menu tidak ditemukan.</p>`;
+                return;
+            }
 
-      const order = {
-        id: "HB-ORD-" + Date.now().toString(36).toUpperCase(),
-        menu: menu.name,
-        estimatedSubtotal: menu.price * Number($("qty").value),
-        qty: Number($("qty").value),
-        name: $("customerName") ? $("customerName").value.trim() : "",
-        phone: $("customerPhone") ? $("customerPhone").value.trim() : "",
-        fulfillment: $("fulfillment") ? $("fulfillment").value : "",
-        address: $("address") ? $("address").value.trim() : "",
-        notes: $("notes") ? $("notes").value.trim() : "",
-        createdAt: new Date().toISOString()
-      };
+            items.forEach(product => {
+                const card = document.createElement("div");
+                card.className = "card";
+                
+                // Cek ketersediaan foto & sediakan fallback jika image rusak/belum diunggah
+                const imageTag = product.image 
+                    ? `<img src="${product.image}" alt="${product.name}" class="card-img" onerror="this.outerHTML='<div class=\\'card-img-placeholder\\'>${product.name}</div>'">`
+                    : `<div class="card-img-placeholder">${product.name}</div>`;
 
-      if (!Number.isInteger(order.qty) || order.qty < 1 || order.qty > 30) {
-        showToast("Jumlah pemesanan harus antara 1 sampai 30 porsi.");
-        return;
-      }
+                card.innerHTML = `
+                    ${imageTag}
+                    <div class="card-body">
+                        <h3 class="card-title">${product.name}</h3>
+                        <p class="card-desc">${product.desc}</p>
+                        <div class="card-price">Rp ${formatRupiah(product.price)}</div>
+                        <button class="btn" onclick="quickSelectProduct(${product.id})">Pilih Menu Ini</button>
+                    </div>
+                `;
+                catalogGrid.appendChild(card);
+            });
+        }
 
-      const rows = readOrders();
-      rows.push(order);
-      saveOrders(rows);
+        // Populate Dropdown Form
+        function populateSelectOptions() {
+            selectedItemSelect.innerHTML = `<option value="">-- Pilih Menu --</option>`;
+            catalogProducts.forEach(product => {
+                const option = document.createElement("option");
+                option.value = product.id;
+                option.dataset.price = product.price;
+                option.dataset.name = product.name;
+                option.textContent = `${product.name} - Rp ${formatRupiah(product.price)}`;
+                selectedItemSelect.appendChild(option);
+            });
+        }
 
-      const formatIDR = n => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
-      
-      const message = [
-        `Halo ${CLIENT_NAME}, saya mau pesan:`,
-        "",
-        `*ID Pesanan:* ${order.id}`,
-        `*Nama Pemesan:* ${order.name}`,
-        `*No. HP:* ${order.phone}`,
-        `*Menu Pesanan:* ${order.menu} (${order.qty} porsi)`,
-        `*Estimasi Subtotal:* ${formatIDR(order.estimatedSubtotal)}`,
-        `*Metode Pengiriman:* ${order.fulfillment}`,
-        `*Alamat/Lokasi:* ${order.address || "-"}`,
-        `*Catatan:* ${order.notes || "-"}`,
-        "",
-        "Mohon konfirmasi pesanan dan ketersediaannya. Terima kasih!"
-      ].join("\n");
+        // Calculation Subtotal Logic (Bug 1 Fix)
+        function updateSubtotal() {
+            const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
+            const price = parseFloat(selectedOpt ? selectedOpt.dataset.price : 0) || 0;
+            const qty = parseInt(itemQtyInput.value) || 1;
+            const subtotal = price * qty;
+            
+            subtotalDisplay.textContent = `Estimasi Subtotal: Rp ${formatRupiah(subtotal)}`;
+        }
 
-      const waURL = `https://wa.me/${CLIENT_WA}?text=` + encodeURIComponent(message);
-      const opened = window.open(waURL, "_blank", "noopener,noreferrer");
+        // Quick Pick Function (Bug 1 Fix: Auto Update Subtotal saat memilih menu)
+        window.quickSelectProduct = function(productId) {
+            const formSec = document.getElementById("pesan") || document.getElementById("orderForm");
+            
+            selectedItemSelect.value = productId;
+            updateSubtotal();
 
-      form.reset();
-      if ($("qty")) $("qty").value = "1";
-      renderHistory();
-      updateSubtotal();
-      showToast(opened ? "Membuka WhatsApp..." : "Jika WhatsApp tidak terbuka, izinkan pop-up browser.");
-    });
-  }
+            if (formSec) {
+                formSec.scrollIntoView({ behavior: "smooth" });
+            }
+        };
 
-  if ($("clearOrders")) {
-    $("clearOrders").addEventListener("click", () => {
-      if (!confirm("Hapus seluruh riwayat pesanan lokal?")) return;
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-        renderHistory();
-        showToast("Riwayat pesanan berhasil dihapus.");
-      } catch { showToast("Gagal menghapus penyimpanan."); }
-    });
-  }
+        // Event Listeners for Subtotal Update
+        selectedItemSelect.addEventListener("change", updateSubtotal);
+        itemQtyInput.addEventListener("input", updateSubtotal);
 
-  if ($("item")) $("item").addEventListener("change", updateSubtotal);
-  if ($("qty")) $("qty").addEventListener("input", updateSubtotal);
-  if ($("year")) $("year").textContent = new Date().getFullYear();
+        // Live Search Filter
+        searchInput.addEventListener("input", (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            const filtered = catalogProducts.filter(p => 
+                p.name.toLowerCase().includes(keyword) || 
+                p.category.toLowerCase().includes(keyword) ||
+                p.desc.toLowerCase().includes(keyword)
+            );
+            renderProducts(filtered);
+        });
 
-  // Inisialisasi Awal
-  renderMenu();
-  renderSelect();
-  renderHistory();
-  updateSubtotal();
-</script>
+        // Form Submission & WA Integration Logic
+        orderForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById("customerName").value.trim();
+            const productId = selectedItemSelect.value;
+            const qty = parseInt(itemQtyInput.value) || 1;
+            const branch = document.getElementById("branchSelect").value;
+            const notes = document.getElementById("itemNotes").value.trim();
+
+            if (!name || !productId || !branch) {
+                alert("Silakan lengkapi data pemesanan.");
+                return;
+            }
+
+            const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
+            const productName = selectedOpt.dataset.name;
+            const unitPrice = parseFloat(selectedOpt.dataset.price);
+            const totalPrice = unitPrice * qty;
+
+            // Prefix ID Transaksi Resmi (HB-ORD-)
+            const orderId = "HB-ORD-" + Math.floor(10000 + Math.random() * 90000);
+
+            // Simpan Riwayat Pesanan di LocalStorage
+            const orderPayload = {
+                id: orderId,
+                customer: name,
+                item: productName,
+                qty: qty,
+                total: totalPrice,
+                branch: branch,
+                notes: notes || "-",
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem("last_hb_order", JSON.stringify(orderPayload));
+
+            // Format Pesan WhatsApp Resmi
+            let message = `Halo Holland Bangka, saya ingin memesan:\n\n`;
+            message += `*ID Pesanan:* ${orderId}\n`;
+            message += `*Nama:* ${name}\n`;
+            message += `*Menu:* ${productName}\n`;
+            message += `*Jumlah:* ${qty} Porsi\n`;
+            message += `*Estimasi Subtotal:* Rp ${formatRupiah(totalPrice)}\n`;
+            message += `*Cabang Tujuan:* ${branch}\n`;
+            if (notes) {
+                message += `*Catatan:* ${notes}\n`;
+            }
+            message += `\nMohon konfirmasi pesanan saya. Terima kasih!`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const waUrl = `https://wa.me/${CLIENT_WA_NUMBER}?text=${encodedMessage}`;
+
+            window.open(waUrl, "_blank");
+        });
+
+        // Initial Load Execution
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts(catalogProducts);
+            populateSelectOptions();
+            floatingWaBtn.href = `https://wa.me/${CLIENT_WA_NUMBER}?text=${encodeURIComponent("Halo Holland Bangka, saya ingin bertanya tentang menu.")}`;
+        });
+    </script>
+</body>
+</html>
