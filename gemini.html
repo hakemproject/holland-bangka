@@ -133,6 +133,7 @@
             width: 100%;
             height: 160px;
             object-fit: cover;
+            display: block;
         }
 
         .card-img-placeholder {
@@ -290,7 +291,7 @@
 
         <!-- Filter Pencarian -->
         <div class="search-section">
-            <input type="text" id="searchInput" class="search-input" placeholder="Cari menu (misal: Coklat, Keju, Martabak)...">
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari menu (misal: Coklat, Keju, Martabak)..." aria-label="Cari Menu">
         </div>
 
         <!-- Grid Katalog Menu -->
@@ -352,9 +353,10 @@
 
     <script>
         // KONFIGURASI BISNIS KLIEN
-        const CLIENT_WA_NUMBER = "6281234567890"; // Ganti dengan nomor WhatsApp resmi milik Holland Bangka
+        const RAW_WA_NUMBER = "6281234567890"; // Ganti dengan nomor WhatsApp resmi Holland Bangka
+        const CLIENT_WA_NUMBER = RAW_WA_NUMBER.replace(/\D/g, ''); // Sanitasi otomatis hanya angka
 
-        // Data Produk Resmi Holland Bangka (Mendukung foto produk)
+        // Data Produk Resmi Holland Bangka
         const catalogProducts = [
             { id: 1, name: "Terang Bulan Coklat Kacang", category: "Terang Bulan", price: 35000, image: "img/coklat-kacang.jpg", desc: "Adonan lembut premium dengan isian meeres coklat melimpah dan taburan kacang sangrai." },
             { id: 2, name: "Terang Bulan Keju Susu", category: "Terang Bulan", price: 40000, image: "img/keju-susu.jpg", desc: "Keju parut tebal berpadu manisnya susu kental manis di atas adonan hangat." },
@@ -375,15 +377,37 @@
         const orderForm = document.getElementById("orderForm");
         const floatingWaBtn = document.getElementById("floatingWaBtn");
 
-        // Format Rupiah Helper
-        function formatRupiah(number) {
-            return new Intl.NumberFormat("id-ID").format(number);
+        // Helper Sanitasi HTML (Mencegah XSS & Broken Layout)
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
-        // Render Menu Catalog (Bug 2 Fix: Menampilkan Gambar/Fallback)
+        // Format Rupiah Helper
+        function formatRupiah(number) {
+            const val = Number(number) || 0;
+            return new Intl.NumberFormat("id-ID").format(val);
+        }
+
+        // Handler Error Gambar Aman (Menggantikan inline string escaping)
+        window.handleImageError = function(imgEl, title) {
+            const placeholder = document.createElement("div");
+            placeholder.className = "card-img-placeholder";
+            placeholder.textContent = title;
+            if (imgEl && imgEl.parentNode) {
+                imgEl.parentNode.replaceChild(placeholder, imgEl);
+            }
+        };
+
+        // Render Menu Catalog
         function renderProducts(items) {
             catalogGrid.innerHTML = "";
-            if (items.length === 0) {
+            if (!items || items.length === 0) {
                 catalogGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">Menu tidak ditemukan.</p>`;
                 return;
             }
@@ -392,30 +416,32 @@
                 const card = document.createElement("div");
                 card.className = "card";
                 
-                // Cek ketersediaan foto & sediakan fallback jika image rusak/belum diunggah
-                const imageTag = product.image 
-                    ? `<img src="${product.image}" alt="${product.name}" class="card-img" onerror="this.outerHTML='<div class=\\'card-img-placeholder\\'>${product.name}</div>'">`
-                    : `<div class="card-img-placeholder">${product.name}</div>`;
+                const safeName = escapeHtml(product.name);
+                const safeDesc = escapeHtml(product.desc);
+
+                const imageHtml = product.image 
+                    ? `<img src="${escapeHtml(product.image)}" alt="${safeName}" class="card-img" onerror="handleImageError(this, '${safeName.replace(/'/g, "\\'")}')">`
+                    : `<div class="card-img-placeholder">${safeName}</div>`;
 
                 card.innerHTML = `
-                    ${imageTag}
+                    ${imageHtml}
                     <div class="card-body">
-                        <h3 class="card-title">${product.name}</h3>
-                        <p class="card-desc">${product.desc}</p>
+                        <h3 class="card-title">${safeName}</h3>
+                        <p class="card-desc">${safeDesc}</p>
                         <div class="card-price">Rp ${formatRupiah(product.price)}</div>
-                        <button class="btn" onclick="quickSelectProduct(${product.id})">Pilih Menu Ini</button>
+                        <button type="button" class="btn" onclick="quickSelectProduct(${product.id})">Pilih Menu Ini</button>
                     </div>
                 `;
                 catalogGrid.appendChild(card);
             });
         }
 
-        // Populate Dropdown Form
+        // Populate Dropdown Form Options
         function populateSelectOptions() {
             selectedItemSelect.innerHTML = `<option value="">-- Pilih Menu --</option>`;
             catalogProducts.forEach(product => {
                 const option = document.createElement("option");
-                option.value = product.id;
+                option.value = String(product.id);
                 option.dataset.price = product.price;
                 option.dataset.name = product.name;
                 option.textContent = `${product.name} - Rp ${formatRupiah(product.price)}`;
@@ -423,31 +449,40 @@
             });
         }
 
-        // Calculation Subtotal Logic (Bug 1 Fix)
+        // Calculations Subtotal Logic
         function updateSubtotal() {
             const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
-            const price = parseFloat(selectedOpt ? selectedOpt.dataset.price : 0) || 0;
-            const qty = parseInt(itemQtyInput.value) || 1;
-            const subtotal = price * qty;
+            const price = (selectedOpt && selectedOpt.dataset.price) ? parseFloat(selectedOpt.dataset.price) : 0;
             
+            let qty = parseInt(itemQtyInput.value, 10);
+            if (isNaN(qty) || qty < 1) {
+                qty = 1;
+            }
+
+            const subtotal = price * qty;
             subtotalDisplay.textContent = `Estimasi Subtotal: Rp ${formatRupiah(subtotal)}`;
         }
 
-        // Quick Pick Function (Bug 1 Fix: Auto Update Subtotal saat memilih menu)
+        // Quick Select Menu
         window.quickSelectProduct = function(productId) {
-            const formSec = document.getElementById("pesan") || document.getElementById("orderForm");
-            
-            selectedItemSelect.value = productId;
+            selectedItemSelect.value = String(productId);
             updateSubtotal();
 
+            const formSec = document.getElementById("pesan");
             if (formSec) {
                 formSec.scrollIntoView({ behavior: "smooth" });
             }
         };
 
-        // Event Listeners for Subtotal Update
+        // Event Listeners for Subtotal Updates
         selectedItemSelect.addEventListener("change", updateSubtotal);
         itemQtyInput.addEventListener("input", updateSubtotal);
+        itemQtyInput.addEventListener("change", () => {
+            if (parseInt(itemQtyInput.value, 10) < 1 || isNaN(parseInt(itemQtyInput.value, 10))) {
+                itemQtyInput.value = 1;
+                updateSubtotal();
+            }
+        });
 
         // Live Search Filter
         searchInput.addEventListener("input", (e) => {
@@ -466,7 +501,9 @@
 
             const name = document.getElementById("customerName").value.trim();
             const productId = selectedItemSelect.value;
-            const qty = parseInt(itemQtyInput.value) || 1;
+            let qty = parseInt(itemQtyInput.value, 10);
+            if (isNaN(qty) || qty < 1) qty = 1;
+
             const branch = document.getElementById("branchSelect").value;
             const notes = document.getElementById("itemNotes").value.trim();
 
@@ -476,14 +513,13 @@
             }
 
             const selectedOpt = selectedItemSelect.options[selectedItemSelect.selectedIndex];
-            const productName = selectedOpt.dataset.name;
-            const unitPrice = parseFloat(selectedOpt.dataset.price);
+            const productName = selectedOpt ? selectedOpt.dataset.name : "Menu";
+            const unitPrice = selectedOpt ? parseFloat(selectedOpt.dataset.price) : 0;
             const totalPrice = unitPrice * qty;
 
-            // Prefix ID Transaksi Resmi (HB-ORD-)
             const orderId = "HB-ORD-" + Math.floor(10000 + Math.random() * 90000);
 
-            // Simpan Riwayat Pesanan di LocalStorage
+            // Simpan Riwayat Pesanan
             const orderPayload = {
                 id: orderId,
                 customer: name,
@@ -494,9 +530,14 @@
                 notes: notes || "-",
                 timestamp: new Date().toISOString()
             };
-            localStorage.setItem("last_hb_order", JSON.stringify(orderPayload));
+            
+            try {
+                localStorage.setItem("last_hb_order", JSON.stringify(orderPayload));
+            } catch (err) {
+                console.warn("Storage tidak didukung atau penuh:", err);
+            }
 
-            // Format Pesan WhatsApp Resmi
+            // Format Pesan WA Resmi
             let message = `Halo Holland Bangka, saya ingin memesan:\n\n`;
             message += `*ID Pesanan:* ${orderId}\n`;
             message += `*Nama:* ${name}\n`;
@@ -515,7 +556,7 @@
             window.open(waUrl, "_blank");
         });
 
-        // Initial Load Execution
+        // Initial Load
         document.addEventListener("DOMContentLoaded", () => {
             renderProducts(catalogProducts);
             populateSelectOptions();
